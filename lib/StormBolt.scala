@@ -10,9 +10,12 @@ import java.util.Map
 
 
 class StormBolt(val outputFields: List[String]) extends IRichBolt {
-    var _collector:OutputCollector = null
-    var _context:TopologyContext = null
-    var _conf:java.util.Map[_, _] = null
+    var _collector:OutputCollector = _
+    var _context:TopologyContext = _
+    var _conf:java.util.Map[_, _] = _
+
+    type processFuncType = Tuple => List[java.lang.Object]
+    var processFn:processFuncType = { t:Tuple => Nil }
 
     override def prepare(conf:java.util.Map[_, _], context:TopologyContext, collector:OutputCollector) = {
         _collector = collector
@@ -22,11 +25,16 @@ class StormBolt(val outputFields: List[String]) extends IRichBolt {
 
     override def cleanup = {}
 
-    override def execute(tuple: Tuple) = {}
+    override def execute(tuple: Tuple) = {
+      _collector.emit(tuple, processFn(tuple))
+      _collector.ack(tuple)
+    }
 
     override def declareOutputFields(declarer:OutputFieldsDeclarer) = {
         declarer.declare(new Fields(outputFields));
     }
+
+    def process(codeBlock: processFuncType) = { processFn = codeBlock }
 
     def ack(tuple: Tuple) = _collector.ack(tuple)
 }
