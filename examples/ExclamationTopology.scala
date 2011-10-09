@@ -8,19 +8,18 @@ import backtype.storm.topology.TopologyBuilder
 import backtype.storm.tuple.{Fields, Tuple, Values}
 
 
+object ExclamationBolt extends StormBolt(outputFields = List("word")) {
+  process { t:Tuple => List(t.getString(0) + "!!!") }
+}
+
 object ExclamationTopology {
-
-    class ExclamationBolt extends StormBolt(List("word")) {
-      process { t:Tuple => List(t.getString(0) + "!!!") }
-    }
-
     def main(args: Array[String]) = {
         val builder = new TopologyBuilder()
 
         builder.setSpout(1, new TestWordSpout(), 10)
-        builder.setBolt(2, new ExclamationBolt(), 3)
+        builder.setBolt(2, ExclamationBolt, 3)
                 .shuffleGrouping(1)
-        builder.setBolt(3, new ExclamationBolt(), 2)
+        builder.setBolt(3, ExclamationBolt, 2)
                 .shuffleGrouping(2)
 
         val conf = new Config()
