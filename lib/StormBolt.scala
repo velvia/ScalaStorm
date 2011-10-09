@@ -1,4 +1,4 @@
-package storm.scala
+package storm.scala.dsl
 
 import backtype.storm.topology.IRichBolt
 import backtype.storm.topology.OutputFieldsDeclarer

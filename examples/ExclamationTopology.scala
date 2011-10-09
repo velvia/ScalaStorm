@@ -1,5 +1,6 @@
-package storm.scala
+package storm.scala.examples
 
+import storm.scala.dsl._
 import backtype.storm.Config
 import backtype.storm.LocalCluster
 import backtype.storm.testing.TestWordSpout
