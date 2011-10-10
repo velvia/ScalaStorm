@@ -9,13 +9,15 @@ import collection.JavaConversions._
 import java.util.Map
 
 
+// The StormBolt class is an implementation of IRichBolt which
+// provides a Scala DSL for making Bolt development concise.
 class StormBolt(val outputFields: List[String]) extends IRichBolt {
     var _collector:OutputCollector = _
     var _context:TopologyContext = _
     var _conf:java.util.Map[_, _] = _
+    var _tuple:Tuple = _
 
-    type processFuncType = Tuple => List[java.lang.Object]
-    var processFn:processFuncType = { t:Tuple => Nil }
+    var processFn: Tuple => Unit = { t => null }
 
     override def prepare(conf:java.util.Map[_, _], context:TopologyContext, collector:OutputCollector) = {
         _collector = collector
@@ -26,7 +28,8 @@ class StormBolt(val outputFields: List[String]) extends IRichBolt {
     override def cleanup = {}
 
     override def execute(tuple: Tuple) = {
-      _collector.emit(tuple, processFn(tuple))
+      _tuple = tuple
+      processFn(tuple)
       _collector.ack(tuple)
     }
 
@@ -34,7 +37,9 @@ class StormBolt(val outputFields: List[String]) extends IRichBolt {
         declarer.declare(new Fields(outputFields));
     }
 
-    def process(codeBlock: processFuncType) = { processFn = codeBlock }
+    def process(codeBlock: Tuple => Unit) = { processFn = codeBlock }
 
-    def ack(tuple: Tuple) = _collector.ack(tuple)
+    def emit(values: java.lang.Object*) = _collector.emit(_tuple, values.toList)
+
+    def ack = _collector.ack(_tuple)
 }
