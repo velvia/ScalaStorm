@@ -42,5 +42,20 @@ class WordCount extends StormBolt(outputFields = List("word", "count")) {
 object WordCountTopology {
   def main(args: Array[String]) = {
     val builder = new TopologyBuilder
+
+    builder.setSpout(1, new RandomSentenceSpout, 5)
+    builder.setBolt(2, new SplitSentence, 8)
+        .shuffleGrouping(1)
+    builder.setBolt(3, new WordCount, 12)
+        .fieldsGrouping(2, new Fields("word"))
+
+    val conf = new Config
+    conf.setDebug(true)
+    conf.setMaxTaskParallelism(3)
+
+    val cluster = new LocalCluster
+    cluster.submitTopology("word-count", conf, builder.createTopology)
+    Thread sleep 10000
+    cluster.shutdown
   }
 }
