@@ -28,10 +28,10 @@ class SplitSentence extends StormBolt(outputFields = List("word")) {
 
 
 class WordCount extends StormBolt(outputFields = List("word", "count")) {
-  // NOTE: withDefaultValue is new to 2.9.1.  If using <= 2.9.0.x, you need to
-  // replace it with { override def default(key:String) = 0 }
-  val counts = new HashMap[String, Int]().withDefaultValue(0)
-  process { t =>
+  // NOTE: Scala 2.9.1 has a withDefaultValue method, but it is not serializable
+  // so can't be used with Storm.  :(
+  val counts = new HashMap[String, Int]() { override def default(key:String) = 0 }
+    process { t =>
     val word = t.getString(0)
     counts(word) += 1
     emit(word, counts(word): java.lang.Integer)
