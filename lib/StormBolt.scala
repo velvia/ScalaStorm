@@ -39,7 +39,7 @@ class StormBolt(val outputFields: List[String]) extends IRichBolt {
 
     def process(codeBlock: Tuple => Unit) = { processFn = codeBlock }
 
-    def emit(values: java.lang.Object*) = _collector.emit(_tuple, values.toList)
+    def emit(values: AnyRef*) = _collector.emit(_tuple, values.toList)
 
     def ack = _collector.ack(_tuple)
 }

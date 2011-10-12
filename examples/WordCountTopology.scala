@@ -6,10 +6,26 @@ import backtype.storm.LocalCluster
 import backtype.storm.topology.TopologyBuilder
 import backtype.storm.tuple.{Fields, Tuple, Values}
 import collection.mutable.HashMap
+import util.Random
+
+
+class RandomSentenceSpout extends StormSpout(outputFields = List("sentence")) {
+  val sentences = List("the cow jumped over the moon",
+                       "an apple a day keeps the doctor away",
+                       "four score and seven years ago",
+                       "snow white and the seven dwarfs",
+                       "i am at two with nature")
+  def nextTuple = {
+    Thread sleep 100
+    emit (sentences(Random.nextInt(sentences.length)))
+  }
+}
+
 
 class SplitSentence extends StormBolt(outputFields = List("word")) {
   process { t => t.getString(0) split " " foreach { word => emit(word) } }
 }
+
 
 class WordCount extends StormBolt(outputFields = List("word", "count")) {
   // NOTE: withDefaultValue is new to 2.9.1.  If using <= 2.9.0.x, you need to
