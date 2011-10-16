@@ -11,33 +11,29 @@ import java.util.Map
 
 // The StormBolt class is an implementation of IRichBolt which
 // provides a Scala DSL for making Bolt development concise.
-class StormBolt(val outputFields: List[String]) extends IRichBolt {
+// To use, extend this class and implement the execute(t: Tuple) method.
+//
+// The following DSLs for emitting are supported:
+//   using anchor <tuple> emit (...)
+//   anchor(<tuple>) emit (...)
+//   <tuple> emit (...)
+//   using no anchor emit (...)
+abstract class StormBolt(val outputFields: List[String]) extends IRichBolt {
     var _collector:OutputCollector = _
     var _context:TopologyContext = _
     var _conf:java.util.Map[_, _] = _
-    var _tuple:Tuple = _
 
-    var processFn: Tuple => Unit = { t => null }
-
-    override def prepare(conf:java.util.Map[_, _], context:TopologyContext, collector:OutputCollector) = {
+    def prepare(conf:java.util.Map[_, _], context:TopologyContext, collector:OutputCollector) = {
         _collector = collector
         _context = context
         _conf = conf
     }
 
-    override def cleanup = {}
+    def cleanup = {}
 
-    override def execute(tuple: Tuple) = {
-      _tuple = tuple
-      processFn(tuple)
-      _collector.ack(tuple)
-    }
-
-    override def declareOutputFields(declarer:OutputFieldsDeclarer) = {
+    def declareOutputFields(declarer:OutputFieldsDeclarer) = {
         declarer.declare(new Fields(outputFields));
     }
-
-    def process(codeBlock: Tuple => Unit) = { processFn = codeBlock }
 
     // Declare an anchor for emitting a tuple
     def anchor(tuple: Tuple) = new StormTuple(_collector, tuple)
