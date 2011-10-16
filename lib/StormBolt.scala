@@ -42,6 +42,14 @@ class StormBolt(val outputFields: List[String]) extends IRichBolt {
     // Declare an anchor for emitting a tuple
     def anchor(tuple: Tuple) = new StormTuple(_collector, tuple)
 
+    def anchor(tuples: List[Tuple]) = new StormTupleList(_collector, tuples)
+
+    // Use this for unanchored emits:
+    //    using no anchor emit (val1, val2, ...)
+    def no(s: String) = new UnanchoredEmit(_collector)
+
+    val anchor = ""
+
     // Combine with anchor for a cool DSL like this:
     // using anchor t emit (val1, val2, ..)
     def using = this
@@ -50,4 +58,7 @@ class StormBolt(val outputFields: List[String]) extends IRichBolt {
     // tuple emit (val1, val2, ...)
     implicit def stormTupleConvert(tuple: Tuple) =
       new StormTuple(_collector, tuple)
+
+    implicit def stormTupleListConverter(tuples: List[Tuple]) =
+      new StormTupleList(_collector, tuples)
 }
