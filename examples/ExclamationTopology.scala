@@ -9,7 +9,7 @@ import backtype.storm.tuple.{Fields, Tuple, Values}
 
 
 class ExclamationBolt extends StormBolt(outputFields = List("word")) {
-  process { t => emit(t.getString(0) + "!!!") }
+  process { t => t emit(t.getString(0) + "!!!") }
 }
 
 object ExclamationTopology {

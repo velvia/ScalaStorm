@@ -23,7 +23,8 @@ class RandomSentenceSpout extends StormSpout(outputFields = List("sentence")) {
 
 
 class SplitSentence extends StormBolt(outputFields = List("word")) {
-  process { t => t.getString(0) split " " foreach { word => emit(word) } }
+  process { t => t.getString(0) split " " foreach
+      { word => using anchor t emit (word) } }
 }
 
 
@@ -31,10 +32,10 @@ class WordCount extends StormBolt(outputFields = List("word", "count")) {
   // NOTE: Scala 2.9.1 has a withDefaultValue method, but it is not serializable
   // so can't be used with Storm.  :(
   val counts = new HashMap[String, Int]() { override def default(key:String) = 0 }
-    process { t =>
+  process { t =>
     val word = t.getString(0)
     counts(word) += 1
-    emit(word, counts(word): java.lang.Integer)
+    using anchor t emit (word, counts(word): java.lang.Integer)
   }
 }
 

@@ -39,7 +39,15 @@ class StormBolt(val outputFields: List[String]) extends IRichBolt {
 
     def process(codeBlock: Tuple => Unit) = { processFn = codeBlock }
 
-    def emit(values: AnyRef*) = _collector.emit(_tuple, values.toList)
+    // Declare an anchor for emitting a tuple
+    def anchor(tuple: Tuple) = new StormTuple(_collector, tuple)
 
-    def ack = _collector.ack(_tuple)
+    // Combine with anchor for a cool DSL like this:
+    // using anchor t emit (val1, val2, ..)
+    def using = this
+
+    // implicitly convert to a stormTuple for easy emit syntax like
+    // tuple emit (val1, val2, ...)
+    implicit def stormTupleConvert(tuple: Tuple) =
+      new StormTuple(_collector, tuple)
 }
