@@ -10,12 +10,16 @@ import collection.JavaConverters._
 
 // A base class for the other DSL classes
 abstract class BaseEmitDsl(val collector: OutputCollector) {
-  var emitFunc: List[AnyRef] => java.util.List[java.lang.Integer] = collector.emit(_)
+  var emitFunc: List[AnyRef] => Seq[java.lang.Integer] = collector.emit(_).asScala
+  var emitDirectFunc: (Int, List[AnyRef]) => Unit = collector.emitDirect(_, _)
 
   // The emit function takes in a variable list of (arg1, arg2, ...) which looks
   // like a tuple!
-  // The args are translated to a list for efficiency.
+  // It returns a Seq of java.lang.Integers.
   def emit(values: AnyRef*) = emitFunc(values.toList)
+
+  // emitDirect is for emitting directly to a specific taskId.
+  def emitDirect(taskId: Int, values: AnyRef*) = emitDirectFunc(taskId, values.toList)
 }
 
 
@@ -25,7 +29,8 @@ abstract class BaseEmitDsl(val collector: OutputCollector) {
 //    new UnanchoredEmit(collector) toStream <streamId> emit (va1, val2, ..)
 class UnanchoredEmit(collector: OutputCollector) extends BaseEmitDsl(collector) {
   def toStream(streamId: Int) = {
-    emitFunc = collector.emit(streamId, _)
+    emitFunc = collector.emit(streamId, _).asScala
+    emitDirectFunc = collector.emitDirect(_, streamId, _)
     this
   }
 }
@@ -39,11 +44,13 @@ class UnanchoredEmit(collector: OutputCollector) extends BaseEmitDsl(collector) 
 class StormTuple(collector: OutputCollector, val tuple:Tuple)
   extends BaseEmitDsl(collector) {
   // Default emit function to one that takes in the tuple as the anchor
-  emitFunc = collector.emit(tuple, _)
+  emitFunc = collector.emit(tuple, _).asScala
+  emitDirectFunc = collector.emitDirect(_, tuple, _)
 
   // stream method causes the emit to emit to a specific stream
   def toStream(streamId: Int) = {
-    emitFunc = collector.emit(streamId, tuple, _)
+    emitFunc = collector.emit(streamId, tuple, _).asScala
+    emitDirectFunc = collector.emitDirect(_, streamId, tuple, _)
     this
   }
 
@@ -73,7 +80,8 @@ class StormTuple(collector: OutputCollector, val tuple:Tuple)
 class StormTupleList(collector: OutputCollector, val tuples: List[Tuple])
   extends BaseEmitDsl(collector) {
 
-  emitFunc = collector.emit(tuples, _)
+  emitFunc = collector.emit(tuples, _).asScala
+  emitDirectFunc = collector.emitDirect(_, tuples, _)
 
   // There is no interface for emitting to a specific stream anchored on multiple tuples.
 
