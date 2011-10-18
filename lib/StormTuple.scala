@@ -5,6 +5,7 @@ import backtype.storm.task.TopologyContext
 import backtype.storm.task.OutputCollector
 import backtype.storm.tuple.MessageId
 import collection.JavaConversions._
+import collection.JavaConverters._
 
 
 // A base class for the other DSL classes
@@ -48,6 +49,20 @@ class StormTuple(collector: OutputCollector, val tuple:Tuple)
 
   // Ack this tuple
   def ack = collector.ack(tuple)
+
+  val lastResort: PartialFunction[Seq[AnyRef], Unit] = {
+      case _ => throw new RuntimeException("Unhandled tuple " + tuple)
+    }
+
+  // Use Scala pattern matching on Storm tuples!
+  // Pass a partial function to this method with case Seq(..)
+  // statements.
+  // Anything not matched by the partial function will result
+  // in an exception.
+  def matchSeq(f: PartialFunction[Seq[AnyRef], Unit]) = {
+    val matchFunc = f orElse lastResort
+    matchFunc(tuple.getValues.asScala)
+  }
 }
 
 

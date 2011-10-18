@@ -22,9 +22,11 @@ class RandomSentenceSpout extends StormSpout(outputFields = List("sentence")) {
 }
 
 
+// An example of using matchSeq for Scala pattern matching of Storm tuples
+// plus using the emit and ack DSLs.
 class SplitSentence extends StormBolt(outputFields = List("word")) {
-  def execute(t: Tuple) {
-    t.getString(0) split " " foreach
+  def execute(t: Tuple) = t matchSeq {
+    case Seq(sentence: String) => sentence split " " foreach
       { word => using anchor t emit (word) }
     t ack
   }
@@ -35,11 +37,11 @@ class WordCount extends StormBolt(outputFields = List("word", "count")) {
   // NOTE: Scala 2.9.1 has a withDefaultValue method, but it is not serializable
   // so can't be used with Storm.  :(
   val counts = new HashMap[String, Int]() { override def default(key:String) = 0 }
-  def execute(t: Tuple) {
-    val word = t.getString(0)
-    counts(word) += 1
-    using anchor t emit (word, counts(word): java.lang.Integer)
-    t ack
+  def execute(t: Tuple) = t matchSeq {
+    case Seq(word: String) =>
+      counts(word) += 1
+      using anchor t emit (word, counts(word): java.lang.Integer)
+      t ack
   }
 }
 
