@@ -1,5 +1,6 @@
 name := "scala-storm"
 
+// If you comment this out, SBT 0.10 will default to Scala 2.8.1
 scalaVersion := "2.9.1"
 
 // sbt defaults to <project>/src/test/{scala,java} unless we put this in
