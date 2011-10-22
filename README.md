@@ -60,6 +60,7 @@ emit and emitDirect
 emit takes a variable number of AnyRef arguments which make up the tuple to emit.  emitDirect is the same but the first argument is the Int taskId, followed by a variable number of AnyRefs.
 
 To emit a tuple anchored on one tuple, where t is of type Tuple, do one of the following:
+
 ```scala
 using anchor t emit (val1, val2, ...)
 using anchor t emitDirect (taskId, val1, val2, ...)
@@ -68,18 +69,21 @@ t emit (val1, val2, ...)
 ```
 
 To emit a tuple to a particular stream:
+
 ```scala
 using anchor t toStream 5 emit (val1, val2, ...)
 using anchor t toStream 5 emitDirect (taskId, val1, val2, ...)
 ```
 
 To emit anchored on multiple tuples:
+
 ```scala
 using anchor List(t1, t2) emit (val1, val2, ...)
 using anchor List(t1, t2) emitDirect (taskId, val1, val2, ...)
 ```
 
 To emit unanchored:
+
 ```scala
 using no anchor emit (val1, val2, ...)
 using no anchor emitDirect (taskId, val1, val2, ...)
