@@ -100,3 +100,35 @@ List(t1, t2) ack     // Ack multiple tuples, in order of list
 
 Spout DSL
 =========
+The Scala Spout DSL is very similar to the Bolt DSL.  One extends the StormSpout class, declaring the output fields, and defines the nextTuple method:
+
+```scala
+class MySpout extends StormSpout(outputFields = List("word", "author")) {
+  def nextTuple = {}
+}
+```
+
+Spout emit DSL
+--------------
+The spout emit DSL is very similar to the bolt emit DSL.  Again, all variants of the SpoutOutputCollector emit and emitDirect APIs are supported.  The basic forms for emitting tuples are as follows:
+
+```scala
+emit (val1, val2, ...)
+emitDirect (taskId, val1, val2, ...)
+```
+
+To emit a tuple with a specific message ID:
+
+```scala
+using msgId 9876 emit (val1, val2, ...)
+using msgId 9876 emitDirect (taskId, val1, val2, ...)
+```
+
+To emit a tuple to a specific stream:
+
+```scala
+toStream 6 emit (val1, val2, ...)
+toStream 6 emitDirect (taskId, val1, val2, ...)
+using msgId 9876 toStream 6 emit (val1, val2, ...)
+using msgId 9876 toStream 6 emitDirect (taskId, val1, val2, ...)
+```
