@@ -132,3 +132,8 @@ toStream 6 emitDirect (taskId, val1, val2, ...)
 using msgId 9876 toStream 6 emit (val1, val2, ...)
 using msgId 9876 toStream 6 emitDirect (taskId, val1, val2, ...)
 ```
+
+License
+=======
+Apache 2.0.   Please see LICENSE.md.
+All contents copyright (c) 2011, Evan Chan.

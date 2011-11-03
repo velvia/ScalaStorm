@@ -1,3 +1,5 @@
+// Copyright (c) 2011 Evan Chan
+
 package storm.scala.dsl
 
 import java.util.Map
