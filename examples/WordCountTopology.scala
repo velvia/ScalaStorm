@@ -5,7 +5,7 @@ import backtype.storm.Config
 import backtype.storm.LocalCluster
 import backtype.storm.topology.TopologyBuilder
 import backtype.storm.tuple.{Fields, Tuple, Values}
-import collection.mutable.HashMap
+import collection.mutable.{Map, HashMap}
 import util.Random
 
 
@@ -34,9 +34,10 @@ class SplitSentence extends StormBolt(outputFields = List("word")) {
 
 
 class WordCount extends StormBolt(outputFields = List("word", "count")) {
-  // NOTE: Scala 2.9.1 has a withDefaultValue method, but it is not serializable
-  // so can't be used with Storm.  :(
-  val counts = new HashMap[String, Int]() { override def default(key:String) = 0 }
+  var counts: Map[String, Int] = _
+  setup {
+    counts = new HashMap[String, Int]().withDefaultValue(0)
+  }
   def execute(t: Tuple) = t matchSeq {
     case Seq(word: String) =>
       counts(word) += 1
