@@ -11,13 +11,14 @@ import collection.JavaConverters._
 import collection.JavaConversions._
 
 abstract class StormSpout(val outputFields: List[String],
-                          val isDistributed: Boolean = false) extends IRichSpout {
+                          val isDistributed: Boolean = false) extends IRichSpout with SetupFunc {
   var _context:TopologyContext = _
   var _collector:SpoutOutputCollector = _
 
   def open(conf: Map[_, _], context: TopologyContext, collector: SpoutOutputCollector) = {
     _context = context
     _collector = collector
+    _setup()
   }
 
   def close() = {}
@@ -43,7 +44,7 @@ abstract class StormSpout(val outputFields: List[String],
   def toStream(streamId: Int) = new StreamEmitter(_collector, streamId)
 
   def emit(values: AnyRef*) = _collector.emit(values.toList)
-  
+
   def emitDirect(taskId: Int, values: AnyRef*) = _collector.emitDirect(taskId, values.toList)
 }
 

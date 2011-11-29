@@ -20,7 +20,7 @@ import java.util.Map
 //   anchor(<tuple>) emit (...)
 //   <tuple> emit (...)
 //   using no anchor emit (...)
-abstract class StormBolt(val outputFields: List[String]) extends IRichBolt {
+abstract class StormBolt(val outputFields: List[String]) extends IRichBolt with SetupFunc {
     var _collector:OutputCollector = _
     var _context:TopologyContext = _
     var _conf:java.util.Map[_, _] = _
@@ -29,6 +29,7 @@ abstract class StormBolt(val outputFields: List[String]) extends IRichBolt {
         _collector = collector
         _context = context
         _conf = conf
+        _setup()
     }
 
     def cleanup = {}
