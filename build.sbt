@@ -7,7 +7,7 @@ scalaVersion := "2.9.1"
 unmanagedSourceDirectories in Test <<= Seq( baseDirectory( _ / "test" ) ).join
 
 unmanagedSourceDirectories in Compile <<= Seq( baseDirectory( _ / "examples" ),
-                                               baseDirectory( _ / "lib")).join
+                                               baseDirectory( _ / "dsl")).join
 
 resolvers ++= Seq("clojars" at "http://clojars.org/repo/",
                   "clojure-releases" at "http://build.clojure.org/releases")
