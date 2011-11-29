@@ -133,6 +133,17 @@ using msgId 9876 toStream 6 emit (val1, val2, ...)
 using msgId 9876 toStream 6 emitDirect (taskId, val1, val2, ...)
 ```
 
+Bolt and Spout Setup
+====================
+You will probably need to initialize per-instance variables at each bolt and spout for all but the simplest of designs.  You should not do this in the Bolt or Spout constructor, as the constructor is only called before submitting the Topology.  What you instead need to do is to override the prepare() and open() methods, and do your setup in there, but there is a convenient `setup` DSL that lets you perform whatever per-instance initialization is needed, in a concise and consistent manner.  To use it:
+
+```scala
+class MyBolt extends StormBolt(List("word")) {
+  var myIterator: Iterator[Int] = _
+  setup { myIterator = ...  }
+}
+```
+
 License
 =======
 Apache 2.0.   Please see LICENSE.md.
