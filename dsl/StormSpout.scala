@@ -41,7 +41,7 @@ abstract class StormSpout(val outputFields: List[String],
 
   def msgId(messageId: AnyRef) = new MessageIdEmitter(_collector, messageId)
 
-  def toStream(streamId: Int) = new StreamEmitter(_collector, streamId)
+  def toStream(streamId: String) = new StreamEmitter(_collector, streamId)
 
   def emit(values: AnyRef*) = _collector.emit(values.toList)
 
@@ -49,7 +49,7 @@ abstract class StormSpout(val outputFields: List[String],
 }
 
 
-class StreamEmitter(collector: SpoutOutputCollector, streamId: Int) {
+class StreamEmitter(collector: SpoutOutputCollector, streamId: String) {
   def emit(values: AnyRef*) = collector.emit(streamId, values.toList)
 
   def emitDirect(taskId: Int, values: AnyRef*) = collector.emitDirect(taskId, streamId, values.toList)
@@ -60,7 +60,7 @@ class MessageIdEmitter(collector: SpoutOutputCollector, msgId: AnyRef) {
   var emitFunc: List[AnyRef] => Seq[java.lang.Integer] = collector.emit(_, msgId).asScala
   var emitDirectFunc: (Int, List[AnyRef]) => Unit = collector.emitDirect(_, _, msgId)
 
-  def toStream(streamId: Int) = {
+  def toStream(streamId: String) = {
     emitFunc = collector.emit(streamId, _, msgId)
     emitDirectFunc = collector.emitDirect(_, streamId, _, msgId)
     this

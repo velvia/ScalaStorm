@@ -30,7 +30,7 @@ abstract class BaseEmitDsl(val collector: OutputCollector) {
 // unanchored emit to a specific stream:
 //    new UnanchoredEmit(collector) toStream <streamId> emit (va1, val2, ..)
 class UnanchoredEmit(collector: OutputCollector) extends BaseEmitDsl(collector) {
-  def toStream(streamId: Int) = {
+  def toStream(streamId: String) = {
     emitFunc = collector.emit(streamId, _).asScala
     emitDirectFunc = collector.emitDirect(_, streamId, _)
     this
@@ -50,7 +50,7 @@ class StormTuple(collector: OutputCollector, val tuple:Tuple)
   emitDirectFunc = collector.emitDirect(_, tuple, _)
 
   // stream method causes the emit to emit to a specific stream
-  def toStream(streamId: Int) = {
+  def toStream(streamId: String) = {
     emitFunc = collector.emit(streamId, tuple, _).asScala
     emitDirectFunc = collector.emitDirect(_, streamId, tuple, _)
     this
