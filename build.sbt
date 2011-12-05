@@ -12,7 +12,7 @@ unmanagedSourceDirectories in Compile <<= Seq( baseDirectory( _ / "examples" ),
 resolvers ++= Seq("clojars" at "http://clojars.org/repo/",
                   "clojure-releases" at "http://build.clojure.org/releases")
 
-libraryDependencies += "storm" % "storm" % "0.5.3"
+libraryDependencies += "storm" % "storm" % "0.6.0"
 
 // This is to prevent error [java.lang.OutOfMemoryError: PermGen space]
 javaOptions += "-XX:MaxPermSize=1024m"

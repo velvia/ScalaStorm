@@ -51,11 +51,11 @@ object WordCountTopology {
   def main(args: Array[String]) = {
     val builder = new TopologyBuilder
 
-    builder.setSpout(1, new RandomSentenceSpout, 5)
-    builder.setBolt(2, new SplitSentence, 8)
-        .shuffleGrouping(1)
-    builder.setBolt(3, new WordCount, 12)
-        .fieldsGrouping(2, new Fields("word"))
+    builder.setSpout("randsentence", new RandomSentenceSpout, 5)
+    builder.setBolt("split", new SplitSentence, 8)
+        .shuffleGrouping("randsentence")
+    builder.setBolt("count", new WordCount, 12)
+        .fieldsGrouping("split", new Fields("word"))
 
     val conf = new Config
     conf.setDebug(true)

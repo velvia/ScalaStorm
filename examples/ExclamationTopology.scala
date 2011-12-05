@@ -19,11 +19,11 @@ object ExclamationTopology {
     def main(args: Array[String]) = {
         val builder = new TopologyBuilder()
 
-        builder.setSpout(1, new TestWordSpout(), 10)
-        builder.setBolt(2, new ExclamationBolt, 3)
-                .shuffleGrouping(1)
-        builder.setBolt(3, new ExclamationBolt, 2)
-                .shuffleGrouping(2)
+        builder.setSpout("words", new TestWordSpout(), 10)
+        builder.setBolt("exclaim1", new ExclamationBolt, 3)
+                .shuffleGrouping("words")
+        builder.setBolt("exclaim2", new ExclamationBolt, 2)
+                .shuffleGrouping("exclaim1")
 
         val conf = new Config()
         conf setDebug true
