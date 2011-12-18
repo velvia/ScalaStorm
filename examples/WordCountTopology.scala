@@ -41,7 +41,8 @@ class WordCount extends StormBolt(outputFields = List("word", "count")) {
   def execute(t: Tuple) = t matchSeq {
     case Seq(word: String) =>
       counts(word) += 1
-      using anchor t emit (word, counts(word): java.lang.Integer)
+      // : Integer is needed since Scala doesn't have auto-boxing
+      using anchor t emit (word, counts(word): Integer)
       t ack
   }
 }
