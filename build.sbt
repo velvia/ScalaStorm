@@ -15,9 +15,9 @@ resolvers ++= Seq("clojars" at "http://clojars.org/repo/",
 libraryDependencies += "storm" % "storm" % "0.6.0"
 
 // This is to prevent error [java.lang.OutOfMemoryError: PermGen space]
-javaOptions += "-XX:MaxPermSize=1024m"
+javaOptions += "-XX:MaxPermSize=1g"
 
-javaOptions += "-Xmx2048m"
+javaOptions += "-Xmx2g"
 
 // When doing sbt run, fork a separate process.  This is apparently needed by storm.
 fork := true
