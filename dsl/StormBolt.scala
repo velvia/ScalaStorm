@@ -38,6 +38,10 @@ abstract class StormBolt(val outputFields: List[String]) extends IRichBolt with 
         declarer.declare(new Fields(outputFields));
     }
 
+    def getComponentConfiguration: Map[String, Object] = {
+      new java.util.HashMap[String, Object]()
+    }
+
     // Declare an anchor for emitting a tuple
     def anchor(tuple: Tuple) = new StormTuple(_collector, tuple)
 
