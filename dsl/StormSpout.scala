@@ -29,6 +29,10 @@ abstract class StormSpout(val outputFields: List[String],
   def declareOutputFields(declarer: OutputFieldsDeclarer) =
     declarer.declare(new Fields(outputFields))
 
+  def getComponentConfiguration: Map[String, Object] = {
+    new java.util.HashMap[String, Object]()
+  }
+  
   def ack(tuple: AnyRef) = {}
 
   def fail(tuple: AnyRef) = {}
