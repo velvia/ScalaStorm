@@ -5,13 +5,14 @@ package storm.scala.dsl
 import java.util.Map
 import backtype.storm.task.TopologyContext
 import backtype.storm.spout.SpoutOutputCollector
-import backtype.storm.topology.{OutputFieldsDeclarer, IRichSpout}
+import backtype.storm.topology.OutputFieldsDeclarer
+import backtype.storm.topology.base.BaseRichSpout
 import backtype.storm.tuple.Fields
 import collection.JavaConverters._
 import collection.JavaConversions._
 
 abstract class StormSpout(val outputFields: List[String],
-                          val isDistributed: Boolean = false) extends IRichSpout with SetupFunc {
+                          val isDistributed: Boolean = false) extends BaseRichSpout with SetupFunc {
   var _context:TopologyContext = _
   var _collector:SpoutOutputCollector = _
 
@@ -21,7 +22,7 @@ abstract class StormSpout(val outputFields: List[String],
     _setup()
   }
 
-  def close() = {}
+  override def close() = {}
 
   // nextTuple needs to be defined by each spout inheriting from here
   //def nextTuple() {}
@@ -29,13 +30,9 @@ abstract class StormSpout(val outputFields: List[String],
   def declareOutputFields(declarer: OutputFieldsDeclarer) =
     declarer.declare(new Fields(outputFields))
 
-  def getComponentConfiguration: Map[String, Object] = {
-    new java.util.HashMap[String, Object]()
-  }
-  
-  def ack(tuple: AnyRef) = {}
+  override def ack(tuple: AnyRef) = {}
 
-  def fail(tuple: AnyRef) = {}
+  override def fail(tuple: AnyRef) = {}
 
   // DSL for emit and emitDirect.
   // [toStream(<streamId>)] emit (val1, val2, ..)

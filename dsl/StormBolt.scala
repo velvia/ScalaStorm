@@ -2,7 +2,7 @@
 
 package storm.scala.dsl
 
-import backtype.storm.topology.IRichBolt
+import backtype.storm.topology.base.BaseRichBolt
 import backtype.storm.topology.OutputFieldsDeclarer
 import backtype.storm.tuple.{Fields, Tuple, Values}
 import backtype.storm.task.OutputCollector
@@ -20,7 +20,7 @@ import java.util.Map
 //   anchor(<tuple>) emit (...)
 //   <tuple> emit (...)
 //   using no anchor emit (...)
-abstract class StormBolt(val outputFields: List[String]) extends IRichBolt with SetupFunc {
+abstract class StormBolt(val outputFields: List[String]) extends BaseRichBolt with SetupFunc {
     var _collector:OutputCollector = _
     var _context:TopologyContext = _
     var _conf:java.util.Map[_, _] = _
@@ -32,14 +32,10 @@ abstract class StormBolt(val outputFields: List[String]) extends IRichBolt with 
         _setup()
     }
 
-    def cleanup = {}
+    override def cleanup = {}
 
     def declareOutputFields(declarer:OutputFieldsDeclarer) = {
         declarer.declare(new Fields(outputFields));
-    }
-
-    def getComponentConfiguration: Map[String, Object] = {
-      new java.util.HashMap[String, Object]()
     }
 
     // Declare an anchor for emitting a tuple
