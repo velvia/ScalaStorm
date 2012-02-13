@@ -22,17 +22,11 @@ abstract class StormSpout(val outputFields: List[String],
     _setup()
   }
 
-  override def close() = {}
-
   // nextTuple needs to be defined by each spout inheriting from here
   //def nextTuple() {}
 
   def declareOutputFields(declarer: OutputFieldsDeclarer) =
     declarer.declare(new Fields(outputFields))
-
-  override def ack(tuple: AnyRef) = {}
-
-  override def fail(tuple: AnyRef) = {}
 
   // DSL for emit and emitDirect.
   // [toStream(<streamId>)] emit (val1, val2, ..)

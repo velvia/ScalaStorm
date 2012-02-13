@@ -32,8 +32,6 @@ abstract class StormBolt(val outputFields: List[String]) extends BaseRichBolt wi
         _setup()
     }
 
-    override def cleanup = {}
-
     def declareOutputFields(declarer:OutputFieldsDeclarer) = {
         declarer.declare(new Fields(outputFields));
     }
