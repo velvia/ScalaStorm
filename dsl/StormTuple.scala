@@ -81,7 +81,7 @@ class StormTuple(collector: OutputCollector, val tuple:Tuple)
 //
 // multi-anchored emit:
 //    List(tuple1,tuple2) emit (val1, val2, ...)
-class StormTupleList(collector: OutputCollector, val tuples: List[Tuple])
+class StormTupleList(collector: OutputCollector, val tuples: Seq[Tuple])
   extends BaseEmitDsl(collector) {
 
   emitFunc = collector.emit(tuples, _).asScala

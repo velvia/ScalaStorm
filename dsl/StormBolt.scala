@@ -58,6 +58,6 @@ abstract class StormBolt(val outputFields: List[String]) extends IRichBolt with 
     implicit def stormTupleConvert(tuple: Tuple) =
       new StormTuple(_collector, tuple)
 
-    implicit def stormTupleListConverter(tuples: List[Tuple]) =
+    implicit def stormTupleListConverter(tuples: Seq[Tuple]) =
       new StormTupleList(_collector, tuples)
 }
