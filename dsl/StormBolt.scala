@@ -8,7 +8,6 @@ import backtype.storm.tuple.{Fields, Tuple, Values}
 import backtype.storm.task.OutputCollector
 import backtype.storm.task.TopologyContext
 import collection.JavaConversions._
-import java.util.Map
 
 
 // The StormBolt class is an implementation of IRichBolt which
@@ -20,22 +19,27 @@ import java.util.Map
 //   anchor(<tuple>) emit (...)
 //   <tuple> emit (...)
 //   using no anchor emit (...)
-abstract class StormBolt(val outputFields: List[String]) extends IRichBolt with SetupFunc {
+abstract class StormBolt(val streamToFields: Map[String, List[String]]) extends IRichBolt with SetupFunc {
     var _collector:OutputCollector = _
     var _context:TopologyContext = _
     var _conf:java.util.Map[_, _] = _
 
-    def prepare(conf:java.util.Map[_, _], context:TopologyContext, collector:OutputCollector) = {
+    // A constructor for the common case when you just want to output to the default stream
+    def this(outputFields: List[String]) = { this(Map("default" -> outputFields)) }
+
+    def prepare(conf:java.util.Map[_, _], context:TopologyContext, collector:OutputCollector) {
         _collector = collector
         _context = context
         _conf = conf
         _setup()
     }
 
-    def cleanup = {}
+    def cleanup {}
 
-    def declareOutputFields(declarer:OutputFieldsDeclarer) = {
-        declarer.declare(new Fields(outputFields));
+    def declareOutputFields(declarer: OutputFieldsDeclarer) {
+      streamToFields foreach { case(stream, fields) =>
+        declarer.declareStream(stream, new Fields(fields))
+      }
     }
 
     // Declare an anchor for emitting a tuple
