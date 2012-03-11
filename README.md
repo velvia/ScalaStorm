@@ -51,13 +51,12 @@ matchSeq allows easy naming and safe typing of tuple components, and allows easy
 def execute(t: Tuple) = t matchSeq {
 	case (username: String, followers: List[String]) => // process data
 	case (timestamp: Integer) =>   // process clock event
-	case _ =>                      // default case, optional (but a good idea)
 }
 ```
 
-Note that the Seq (in reality probably a Buffer of some kind) is a generic of AnyRef (or java.lang.Object).
-This means that you cannot match on primitives.  Rather than matching on Ints, for example, you need to
-match on Integers.
+Unboxing will be automatically performed.  Even though everything going over the wire has to be a subset of java.lang.Object, if you match on a Scala primitive, it will automatically unbox it for you.
+
+By default, if none of the cases are matched, then ScalaStorm will throw a RuntimeException with a message "unhandled tuple".  This can be useful for debugging in local mode to quickly discover matching errors.  If you want to handle the unhandled case yourself, simply add `case _ => ...` as the last case.
 
 emit and emitDirect
 -------------------
@@ -104,15 +103,7 @@ List(t1, t2) ack     // Ack multiple tuples, in order of list
 
 A note on types supported by emit (...)
 ---------------------------------------
-Any descendant(s) of java.lang.Object may be passed to emit().  Note that Scala lacks proper auto-boxing,
-so if you want to pass primitive types such as Int or Boolean, you may need to convert them to an object
-first, or use collection.JavaConversion or collection.JavaConverters together with :type ascriptions.
-
-For example:
-```scala
-emit ("a string", new Integer(myScalaInt))
-emit ("a string", myScalaInt: Integer)
-```
+Any scala type may be passed to emit() so long as it can be autoboxed into an AnyRef (java.lang.Object).  This includes Scala Ints, Longs, and other basic types.
 
 Spout DSL
 =========
