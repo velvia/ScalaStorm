@@ -78,7 +78,7 @@ using anchor t toStream 5 emit (val1, val2, ...)
 using anchor t toStream 5 emitDirect (taskId, val1, val2, ...)
 ```
 
-To emit anchored on multiple tuples:
+To emit anchored on multiple tuples (can be any Seq, not just a List):
 
 ```scala
 using anchor List(t1, t2) emit (val1, val2, ...)
