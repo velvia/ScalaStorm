@@ -33,7 +33,7 @@ class SplitSentence extends StormBolt(outputFields = List("word")) {
 }
 
 
-class WordCount extends StormBolt(outputFields = List("word", "count")) {
+class WordCount extends StormBolt(List("word", "count")) {
   var counts: Map[String, Int] = _
   setup {
     counts = new HashMap[String, Int]().withDefaultValue(0)
