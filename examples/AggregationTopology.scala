@@ -4,9 +4,9 @@ import storm.scala.dsl._
 import backtype.storm.Config
 import backtype.storm.LocalCluster
 import backtype.storm.topology.TopologyBuilder
-import backtype.storm.tuple.{Fields, Tuple, Values}
 import collection.mutable.{ListBuffer, HashMap}
 import util.Random
+import backtype.storm.tuple.{Fields, Tuple, Values}
 
 /*
  * This is an example of streaming aggregation for different web metrics.
@@ -39,23 +39,72 @@ class ClockSpout extends StormSpout(outputFields = List("timestamp")) {
   }
 }
 
-class CityAggregator extends StormBolt(outputFields = List("city", "count")) {
-  var tuples: ListBuffer[Tuple] = _
-  var cityCounts: HashMap[String, Int] = _
-  setup {
-    tuples = new ListBuffer[Tuple]
-    cityCounts = new HashMap[String, Int]
-  }
+
+// Split original stream into three
+class Splitter extends StormBolt(Map("city" -> List("city"), "browser" -> List("browser"))) {
   def execute(t: Tuple) {
     t matchSeq {
-      case Seq(clockTime: Long) =>
-        cityCounts foreach { case(city, count) =>
-          tuples emit (city, count)
-        }
+      case Seq(url: String, city: String, browser: String) =>
+        using anchor t toStream "city" emit (city)
+        using anchor t toStream "browser" emit (browser)
+        t ack
     }
   }
 }
 
-class BrowserAggregator extends StormBolt(outputFields = List("browser", "count")) {
-  def execute(t: Tuple) {}
+
+class FieldAggregator(val fieldName: String) extends StormBolt(outputFields = List(fieldName, "count")) {
+  var tuples: ListBuffer[Tuple] = _
+  var fieldCounts: collection.mutable.Map[String, Int] = _
+  setup {
+    tuples = new ListBuffer[Tuple]
+    fieldCounts = new HashMap[String, Int].withDefaultValue(0)
+  }
+
+  // Only ack when the interval is complete, and ack/anchor all tuples
+  def execute(t: Tuple) {
+    t matchSeq {
+      case Seq(field: String) =>
+        fieldCounts(field) += 1
+        tuples += t
+      case Seq(clockTime: Long) =>
+        fieldCounts foreach { case(field, count) =>
+          tuples emit (field, count)
+        }
+        tuples.ack
+        fieldCounts.clear
+        tuples.clear
+    }
+  }
+}
+
+class CityAggregator extends FieldAggregator("city")
+class BrowserAggregator extends FieldAggregator("browser")
+
+
+object AggregationTopology {
+  def main(args: Array[String]) = {
+    val builder = new TopologyBuilder
+
+    builder.setSpout("webrequest", new WebRequestSpout, 3)
+    builder.setSpout("clock", new ClockSpout)
+
+    builder.setBolt("splitter", new Splitter, 3)
+      .shuffleGrouping("webrequest")
+    builder.setBolt("city_aggregator", new CityAggregator, 5)
+      .fieldsGrouping("splitter", "city", new Fields("city"))
+      .allGrouping("clock")
+    builder.setBolt("browser_aggregator", new BrowserAggregator, 5)
+      .fieldsGrouping("splitter", "browser", new Fields("browser"))
+      .allGrouping("clock")
+
+    val conf = new Config
+    conf.setDebug(true)
+    conf.setMaxTaskParallelism(3)
+
+    val cluster = new LocalCluster
+    cluster.submitTopology("webaggregation", conf, builder.createTopology)
+    Thread sleep 10000
+    cluster.shutdown
+  }
 }
