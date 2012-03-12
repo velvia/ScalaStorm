@@ -41,6 +41,12 @@ class ExclamationBolt extends StormBolt(outputFields = List("word")) {
 }
 ```
 
+If you need to emit to multiple output streams, that can be done by passing a Map with the key being the stream name/Id, and the value being the list of fields for each stream (See the AggregationTopology example):
+```scala
+class Splitter extends StormBolt(Map("city" -> List("city"), "browser" -> List("browser"))) {
+}
+```
+
 matchSeq
 --------
 The `matchSeq` method passes the storm tuple as a Scala Seq to the given code block with one or more case statements. The case statements need to have Seq() in order to match the tuple.  If none of the cases match, then by default a handler which throws a RuntimeError will be used.  It is a good idea to include your own default handler.
