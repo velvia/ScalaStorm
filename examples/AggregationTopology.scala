@@ -6,7 +6,7 @@ import backtype.storm.LocalCluster
 import backtype.storm.topology.TopologyBuilder
 import collection.mutable.{ListBuffer, HashMap}
 import util.Random
-import backtype.storm.tuple.{Fields, Tuple, Values}
+import backtype.storm.tuple.{Fields, Tuple}
 
 /*
  * This is an example of streaming aggregation for different web metrics.
