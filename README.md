@@ -47,6 +47,20 @@ class Splitter extends StormBolt(Map("city" -> List("city"), "browser" -> List("
 }
 ```
 
+BoltDsl trait
+-------------
+If you want to use the emit DSL described below in a thread or Actor, you can use the BoltDsl trait.  You just have to initialise the _collector variable.
+
+```scala
+class DataWorker(val collector: OutputCollector) extends Actor with BoltDsl {
+  _collector = collector
+  ...
+  def receive = {
+    no anchor emit (someString, someInt)
+  }
+}
+```
+
 matchSeq
 --------
 The `matchSeq` method passes the storm tuple as a Scala Seq to the given code block with one or more case statements. The case statements need to have Seq() in order to match the tuple.  If none of the cases match, then by default a handler which throws a RuntimeError will be used.  It is a good idea to include your own default handler.
@@ -160,4 +174,4 @@ class MyBolt extends StormBolt(List("word")) {
 License
 =======
 Apache 2.0.   Please see LICENSE.md.
-All contents copyright (c) 2011, Evan Chan.
+All contents copyright (c) 2012, Evan Chan.
