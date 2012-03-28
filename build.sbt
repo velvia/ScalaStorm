@@ -19,6 +19,8 @@ javaOptions += "-XX:MaxPermSize=1g"
 
 javaOptions += "-Xmx2g"
 
+scalacOptions += "-Yresolve-term-conflict:package"
+
 // When doing sbt run, fork a separate process.  This is apparently needed by storm.
 fork := true
 
