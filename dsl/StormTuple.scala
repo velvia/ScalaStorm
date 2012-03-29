@@ -16,12 +16,13 @@ abstract class BaseEmitDsl(val collector: OutputCollector) {
   var emitDirectFunc: (Int, List[AnyRef]) => Unit = collector.emitDirect(_, _)
 
   // The emit function takes in a variable list of (arg1, arg2, ...) which looks
-  // like a tuple!
+  // like a tuple!   Autoboxing is done.
   // It returns a Seq of java.lang.Integers.
-  def emit(values: AnyRef*) = emitFunc(values.toList)
+  def emit(values: Any*) = emitFunc(values.toList.map { _.asInstanceOf[AnyRef] })
 
   // emitDirect is for emitting directly to a specific taskId.
-  def emitDirect(taskId: Int, values: AnyRef*) = emitDirectFunc(taskId, values.toList)
+  def emitDirect(taskId: Int, values: Any*) = emitDirectFunc(taskId,
+    values.toList.map { _.asInstanceOf[AnyRef] })
 }
 
 
@@ -59,18 +60,19 @@ class StormTuple(collector: OutputCollector, val tuple:Tuple)
   // Ack this tuple
   def ack = collector.ack(tuple)
 
-  val lastResort: PartialFunction[Seq[AnyRef], Unit] = {
+  val lastResort: PartialFunction[Seq[Any], Unit] = {
       case _ => throw new RuntimeException("Unhandled tuple " + tuple)
     }
 
   // Use Scala pattern matching on Storm tuples!
   // Pass a partial function to this method with case Seq(..)
-  // statements.
+  // statements.  Scala will match up any primitives correctly
+  // with their boxed java.lang.Object types in the tuple.
   // Anything not matched by the partial function will result
   // in an exception.
-  def matchSeq(f: PartialFunction[Seq[AnyRef], Unit]) = {
+  def matchSeq(f: PartialFunction[Seq[Any], Unit]) = {
     val matchFunc = f orElse lastResort
-    matchFunc(tuple.getValues.asScala)
+    matchFunc(tuple.getValues.asScala: Seq[Any])
   }
 }
 
@@ -79,7 +81,7 @@ class StormTuple(collector: OutputCollector, val tuple:Tuple)
 //
 // multi-anchored emit:
 //    List(tuple1,tuple2) emit (val1, val2, ...)
-class StormTupleList(collector: OutputCollector, val tuples: List[Tuple])
+class StormTupleList(collector: OutputCollector, val tuples: Seq[Tuple])
   extends BaseEmitDsl(collector) {
 
   emitFunc = collector.emit(tuples, _).asScala

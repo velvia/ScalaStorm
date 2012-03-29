@@ -33,7 +33,7 @@ class SplitSentence extends StormBolt(outputFields = List("word")) {
 }
 
 
-class WordCount extends StormBolt(outputFields = List("word", "count")) {
+class WordCount extends StormBolt(List("word", "count")) {
   var counts: Map[String, Int] = _
   setup {
     counts = new HashMap[String, Int]().withDefaultValue(0)
@@ -41,8 +41,7 @@ class WordCount extends StormBolt(outputFields = List("word", "count")) {
   def execute(t: Tuple) = t matchSeq {
     case Seq(word: String) =>
       counts(word) += 1
-      // : Integer is needed since Scala doesn't have auto-boxing
-      using anchor t emit (word, counts(word): Integer)
+      using anchor t emit (word, counts(word))
       t ack
   }
 }

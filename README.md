@@ -41,6 +41,26 @@ class ExclamationBolt extends StormBolt(outputFields = List("word")) {
 }
 ```
 
+If you need to emit to multiple output streams, that can be done by passing a Map with the key being the stream name/Id, and the value being the list of fields for each stream (See the AggregationTopology example):
+```scala
+class Splitter extends StormBolt(Map("city" -> List("city"), "browser" -> List("browser"))) {
+}
+```
+
+BoltDsl trait
+-------------
+If you want to use the emit DSL described below in a thread or Actor, you can use the BoltDsl trait.  You just have to initialise the _collector variable.
+
+```scala
+class DataWorker(val collector: OutputCollector) extends Actor with BoltDsl {
+  _collector = collector
+  ...
+  def receive = {
+    no anchor emit (someString, someInt)
+  }
+}
+```
+
 matchSeq
 --------
 The `matchSeq` method passes the storm tuple as a Scala Seq to the given code block with one or more case statements. The case statements need to have Seq() in order to match the tuple.  If none of the cases match, then by default a handler which throws a RuntimeError will be used.  It is a good idea to include your own default handler.
@@ -51,13 +71,12 @@ matchSeq allows easy naming and safe typing of tuple components, and allows easy
 def execute(t: Tuple) = t matchSeq {
 	case (username: String, followers: List[String]) => // process data
 	case (timestamp: Integer) =>   // process clock event
-	case _ =>                      // default case, optional (but a good idea)
 }
 ```
 
-Note that the Seq (in reality probably a Buffer of some kind) is a generic of AnyRef (or java.lang.Object).
-This means that you cannot match on primitives.  Rather than matching on Ints, for example, you need to
-match on Integers.
+Unboxing will be automatically performed.  Even though everything going over the wire has to be a subset of java.lang.Object, if you match on a Scala primitive, it will automatically unbox it for you.
+
+By default, if none of the cases are matched, then ScalaStorm will throw a RuntimeException with a message "unhandled tuple".  This can be useful for debugging in local mode to quickly discover matching errors.  If you want to handle the unhandled case yourself, simply add `case _ => ...` as the last case.
 
 emit and emitDirect
 -------------------
@@ -79,7 +98,7 @@ using anchor t toStream 5 emit (val1, val2, ...)
 using anchor t toStream 5 emitDirect (taskId, val1, val2, ...)
 ```
 
-To emit anchored on multiple tuples:
+To emit anchored on multiple tuples (can be any Seq, not just a List):
 
 ```scala
 using anchor List(t1, t2) emit (val1, val2, ...)
@@ -104,15 +123,7 @@ List(t1, t2) ack     // Ack multiple tuples, in order of list
 
 A note on types supported by emit (...)
 ---------------------------------------
-Any descendant(s) of java.lang.Object may be passed to emit().  Note that Scala lacks proper auto-boxing,
-so if you want to pass primitive types such as Int or Boolean, you may need to convert them to an object
-first, or use collection.JavaConversion or collection.JavaConverters together with :type ascriptions.
-
-For example:
-```scala
-emit ("a string", new Integer(myScalaInt))
-emit ("a string", myScalaInt: Integer)
-```
+Any scala type may be passed to emit() so long as it can be autoboxed into an AnyRef (java.lang.Object).  This includes Scala Ints, Longs, and other basic types.
 
 Spout DSL
 =========
@@ -163,4 +174,4 @@ class MyBolt extends StormBolt(List("word")) {
 License
 =======
 Apache 2.0.   Please see LICENSE.md.
-All contents copyright (c) 2011, Evan Chan.
+All contents copyright (c) 2012, Evan Chan.
