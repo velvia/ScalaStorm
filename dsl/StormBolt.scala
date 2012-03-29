@@ -2,7 +2,7 @@
 
 package storm.scala.dsl
 
-import backtype.storm.topology.IRichBolt
+import backtype.storm.topology.base.BaseRichBolt
 import backtype.storm.topology.OutputFieldsDeclarer
 import backtype.storm.tuple.{Fields, Tuple}
 import backtype.storm.task.OutputCollector
@@ -19,7 +19,7 @@ import backtype.storm.task.TopologyContext
 //   <tuple> emit (...)
 //   using no anchor emit (...)
 abstract class StormBolt(val streamToFields: collection.Map[String, List[String]])
-    extends IRichBolt with SetupFunc with BoltDsl {
+    extends BaseRichBolt with SetupFunc with BoltDsl {
     var _context: TopologyContext = _
     var _conf: java.util.Map[_, _] = _
 
@@ -32,8 +32,6 @@ abstract class StormBolt(val streamToFields: collection.Map[String, List[String]
         _conf = conf
         _setup()
     }
-
-    def cleanup {}
 
     def declareOutputFields(declarer: OutputFieldsDeclarer) {
       streamToFields foreach { case(stream, fields) =>
