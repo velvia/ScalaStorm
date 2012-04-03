@@ -19,8 +19,28 @@ A couple things to note here:
 * Output fields are easily declared
 * It's easy to see exactly when the emits and ack happen
 
+Useful features for Scala developers:
+
+* Auto-boxing of Scala primitives in tuple emit and matchSeq
+* A BoltDsl trait for using the DSL from any thread/actor/class
+
 Getting Started
 ===============
+
+The latest version of scala-storm is available as a SNAPSHOT jar from Sonatype OSS.  Add this to your build.sbt:
+
+```scala
+resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+
+libraryDependencies += "com.github.velvia" %% "scala-storm" % "0.2.0-SNAPSHOT"
+```
+
+Version 0.1.1 is available from Maven central and corresponds to Storm 0.6.0.
+``` scala
+libraryDependencies += "com.github.velvia" %% "scala-storm" % "0.1.1"
+```
+
+If you want to build from source:
 
 * Download [sbt](https://github.com/harrah/xsbt/wiki) version 0.10.1 or above
 * clone this project
