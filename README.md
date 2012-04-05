@@ -27,7 +27,7 @@ Useful features for Scala developers:
 Getting Started
 ===============
 
-The latest version of scala-storm is available as a SNAPSHOT jar from Sonatype OSS.  Add this to your build.sbt:
+The latest version of scala-storm, 0.2.0, corresponds to Storm 0.7.1 and is available as a SNAPSHOT jar from Sonatype OSS.  Add this to your build.sbt:
 
 ```scala
 resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
@@ -36,8 +36,14 @@ libraryDependencies += "com.github.velvia" %% "scala-storm" % "0.2.0-SNAPSHOT"
 ```
 
 Version 0.1.1 is available from Maven central and corresponds to Storm 0.6.0.
-``` scala
+```scala
 libraryDependencies += "com.github.velvia" %% "scala-storm" % "0.1.1"
+```
+
+In both cases, you will need additional repos, as maven central does not host the Storm/clojure jars:
+```scala
+resolvers ++= Seq("clojars" at "http://clojars.org/repo/",
+                  "clojure-releases" at "http://build.clojure.org/releases")
 ```
 
 If you want to build from source:
