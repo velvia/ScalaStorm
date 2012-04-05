@@ -10,11 +10,12 @@ import backtype.storm.tuple.{Fields, Tuple}
 
 /*
  * This is an example of streaming aggregation for different web metrics.
- * URLs are coming in with different geo information and devicetype
+ * URLs are coming in with different geo information and devicetypes.
  *
  * It shows off the use of different streams, autoboxing and unboxing
- * in both spouts and bolts, and the use of a clock spout for streaming
- * buckets.  Also, it demonstrates how to do acking of multiple tuples.
+ * in both spouts and bolts, and the use of a clock spout for controlling
+ * aggregation.  Also, it demonstrates how to do acking of multiple tuples,
+ * and emitting with a message ID to get failure detection.
  */
 
 class WebRequestSpout extends StormSpout(outputFields = List("url", "city", "browser")) {
@@ -26,8 +27,10 @@ class WebRequestSpout extends StormSpout(outputFields = List("url", "city", "bro
 
   def nextTuple {
     Thread sleep 100
-    emit (Urls(Random.nextInt(Urls.length)), Cities(Random.nextInt(Cities.length)),
-          Browsers(Random.nextInt(Browsers.length)) )
+    // Emitting with a unique message ID allows Storm to detect failure and resend tuples
+    using msgId(Random.nextInt) emit (Urls(Random.nextInt(Urls.length)),
+                                      Cities(Random.nextInt(Cities.length)),
+                                      Browsers(Random.nextInt(Browsers.length)) )
   }
 }
 
