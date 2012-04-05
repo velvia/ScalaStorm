@@ -34,7 +34,7 @@ abstract class StormSpout(val outputFields: List[String],
   // [using][msgId <messageId>] [toStream <streamId>] emitDirect (taskId, val1, val2, ...)
   def using = this
 
-  def msgId(messageId: AnyRef) = new MessageIdEmitter(_collector, messageId)
+  def msgId(messageId: Any) = new MessageIdEmitter(_collector, messageId.asInstanceOf[AnyRef])
 
   def toStream(streamId: String) = new StreamEmitter(_collector, streamId)
 
