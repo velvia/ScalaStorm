@@ -11,8 +11,7 @@ organization := "com.github.velvia"
 // sbt defaults to <project>/src/test/{scala,java} unless we put this in
 unmanagedSourceDirectories in Test <<= Seq( baseDirectory( _ / "test" ) ).join
 
-unmanagedSourceDirectories in Compile <<= Seq( baseDirectory( _ / "examples" ),
-                                               baseDirectory( _ / "dsl")).join
+unmanagedSourceDirectories in Compile <<= Seq( baseDirectory( _ / "src" ) ).join
 
 resolvers ++= Seq("clojars" at "http://clojars.org/repo/",
                   "clojure-releases" at "http://build.clojure.org/releases")
