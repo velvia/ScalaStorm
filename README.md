@@ -27,17 +27,17 @@ Useful features for Scala developers:
 Getting Started
 ===============
 
-The latest version of scala-storm, 0.2.0, corresponds to Storm 0.7.1 and is available as a SNAPSHOT jar from Sonatype OSS.  Add this to your build.sbt:
+The latest version of scala-storm, 0.2.2-SNAPSHOT, corresponds to Storm 0.8.0 and is available as a SNAPSHOT jar from Sonatype OSS.  Add this to your build.sbt:
 
 ```scala
 resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
-libraryDependencies += "com.github.velvia" %% "scala-storm" % "0.2.0-SNAPSHOT"
+libraryDependencies += "com.github.velvia" %% "scala-storm" % "0.2.2-SNAPSHOT"
 ```
 
-Version 0.1.1 is available from Maven central and corresponds to Storm 0.6.0.
+Version 0.2.0 is available from Maven central and corresponds to Storm 0.7.1.
 ```scala
-libraryDependencies += "com.github.velvia" %% "scala-storm" % "0.1.1"
+libraryDependencies += "com.github.velvia" %% "scala-storm" % "0.2.0"
 ```
 
 In both cases, you will need additional repos, as maven central does not host the Storm/clojure jars:
@@ -53,6 +53,12 @@ If you want to build from source:
 * In the root project dir, type `sbt run`.  SBT will automatically download all dependencies, compile the code, and give you a menu of topologies to run.
 
 To help you get started, the ExclamationTopology and WordCountTopology examples from storm starter have been included.
+
+Please Read For 0.2.2 / Storm 0.8.0 Users
+=========================================
+Storm 0.8.0 emits are no longer thread safe.  You may see NullPointerExceptions with DisruptorQueue in the stack trace.
+If you are doing emits from multiple threads or actors, you will need to synchronize your emits or have them
+come from a single thread.
 
 Bolt DSL
 ========
