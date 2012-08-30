@@ -24,6 +24,16 @@ Useful features for Scala developers:
 * Auto-boxing of Scala primitives in tuple emit and matchSeq
 * A BoltDsl trait for using the DSL from any thread/actor/class
 
+Please Read For 0.2.2 / Storm 0.8.0 Users
+=========================================
+Storm 0.8.0 emits are no longer thread safe.  You may see NullPointerExceptions with DisruptorQueue in the stack trace.
+If you are doing emits from multiple threads or actors, you will need to synchronize your emits or have them
+come from a single thread.  You should synchronize on the collector instance:
+
+```scala
+   _collector.synchronized { tuple emit (val1, val2) }
+```
+
 Getting Started
 ===============
 
@@ -53,12 +63,6 @@ If you want to build from source:
 * In the root project dir, type `sbt run`.  SBT will automatically download all dependencies, compile the code, and give you a menu of topologies to run.
 
 To help you get started, the ExclamationTopology and WordCountTopology examples from storm starter have been included.
-
-Please Read For 0.2.2 / Storm 0.8.0 Users
-=========================================
-Storm 0.8.0 emits are no longer thread safe.  You may see NullPointerExceptions with DisruptorQueue in the stack trace.
-If you are doing emits from multiple threads or actors, you will need to synchronize your emits or have them
-come from a single thread.
 
 Bolt DSL
 ========
