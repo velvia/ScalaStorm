@@ -47,16 +47,15 @@ object TridentWordCount extends App {
 
   val conf = new Config
   conf.setMaxSpoutPending(20)
+  val cluster = new LocalCluster
   if (args.length == 0) {
     val drpc = new LocalDRPC
-    val cluster = new LocalCluster
     cluster.submitTopology("wordCounter", conf, buildTopology(drpc))
     (0 to 100).foreach { i =>
       println("DRPC RESULT: " + drpc.execute("words", "cat the dog jumped"))
       Thread sleep 1000
     }
   } else {
-    conf.setNumWorkers(3)
-    StormSubmitter.submitTopology(args(0), conf, buildTopology(null));
+    cluster.submitTopology(args(0), conf, buildTopology(null));
   }
 }
