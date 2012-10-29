@@ -11,13 +11,9 @@ import backtype.storm.{StormSubmitter, LocalDRPC, LocalCluster, Config}
 import storm.trident.operation.builtin._
 import storm.trident.state.{State, QueryFunction}
 
-object TridentWordCount extends App {
-  class Split extends BaseFunction {
-    def execute(tuple: TridentTuple, collector: TridentCollector) {
-      tuple getString 0 split " " foreach { word => collector.emit(List(word)) }
-    }
-  }
+import storm.scala.dsl.FunctionalTrident._
 
+object TridentWordCount extends App {
   def buildTopology(drpc: LocalDRPC) = {
     val spout = new FixedBatchSpout(new Fields("sentence"), 3,
                 new Values("the cow jumped over the moon"),
@@ -30,11 +26,11 @@ object TridentWordCount extends App {
     val topology = new TridentTopology();
     val wordCounts = topology.newStream("spout1", spout)
       .parallelismHint(16)
-      .each(new Fields("sentence"), new Split(), new Fields("word"))   // flatmap
+      .flatMap("sentence" -> "word") { _.getString(0).split(" ") }
       .persistentAggregate(new MemoryMapState.Factory(), new Count(), new Fields("count"))
 
     topology.newDRPCStream("words", drpc)
-        .each(new Fields("args"), new Split(), new Fields("word"))
+        .flatMap("args" -> "word") { _.getString(0).split(" ") }
         .groupBy(new Fields("word"))
         .stateQuery(wordCounts, new Fields("word"),
                     // Unfortunately asInstanceOf[] needed to get around an apparent scalac bug
