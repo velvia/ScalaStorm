@@ -24,7 +24,7 @@ Useful features for Scala developers:
 * Auto-boxing of Scala primitives in tuple emit and matchSeq
 * A BoltDsl trait for using the DSL from any thread/actor/class
 
-Please Read For 0.2.2 / Storm 0.8.0 Users
+Please Read For 0.2.2 / Storm 0.8.0+ Users
 =========================================
 Storm 0.8.0 emits are no longer thread safe.  You may see NullPointerExceptions with DisruptorQueue in the stack trace.
 If you are doing emits from multiple threads or actors, you will need to synchronize your emits or have them
@@ -37,7 +37,7 @@ come from a single thread.  You should synchronize on the collector instance:
 Getting Started
 ===============
 
-The latest version of scala-storm, 0.2.2-SNAPSHOT, corresponds to Storm 0.8.0 and is available as a SNAPSHOT jar from Sonatype OSS.  Add this to your build.sbt:
+The latest version of scala-storm, 0.2.2-SNAPSHOT, corresponds to Storm 0.8.1 and is available as a SNAPSHOT jar from Sonatype OSS.  Add this to your build.sbt:
 
 ```scala
 resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
