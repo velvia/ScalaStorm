@@ -34,6 +34,12 @@ come from a single thread.  You should synchronize on the collector instance:
    _collector.synchronized { tuple emit (val1, val2) }
 ```
 
+## Functional Trident (NEW!)
+
+There is a sample Trident topology, in src/storm/scala/examples/trident.  It features an
+experimental new DSL for doing functional Trident topologies (see FunctionalTrident.scala).  I am
+currently soliciting feedback for this feature, so drop me a line if you like it.
+
 Getting Started
 ===============
 
