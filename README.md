@@ -43,12 +43,10 @@ currently soliciting feedback for this feature, so drop me a line if you like it
 Getting Started
 ===============
 
-The latest version of scala-storm, 0.2.2-SNAPSHOT, corresponds to Storm 0.8.1 and is available as a SNAPSHOT jar from Sonatype OSS.  Add this to your build.sbt:
+The latest version of scala-storm, 0.2.2, corresponds to Storm 0.8.1 and is available from Maven Central.  Add this to your build.sbt:
 
 ```scala
-resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-
-libraryDependencies += "com.github.velvia" %% "scala-storm" % "0.2.2-SNAPSHOT"
+libraryDependencies += "com.github.velvia" %% "scala-storm" % "0.2.2"
 ```
 
 Version 0.2.0 is available from Maven central and corresponds to Storm 0.7.1.
