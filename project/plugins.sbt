@@ -4,6 +4,4 @@ resolvers += Resolver.url("sbt-plugin-releases",
 
 addSbtPlugin("com.jsuereth" % "xsbt-gpg-plugin" % "0.6")
 
-resolvers += "gseitz@github" at "http://gseitz.github.com/maven/"
-
-addSbtPlugin("com.github.gseitz" % "sbt-release" % "0.4")
+addSbtPlugin("org.ensime" % "ensime-sbt-cmd" % "0.1.0")
