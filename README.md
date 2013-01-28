@@ -109,8 +109,8 @@ matchSeq allows easy naming and safe typing of tuple components, and allows easy
 
 ```scala
 def execute(t: Tuple) = t matchSeq {
-	case (username: String, followers: List[String]) => // process data
-	case (timestamp: Integer) =>   // process clock event
+	case Seq(username: String, followers: List[String]) => // process data
+	case Seq(timestamp: Integer) =>   // process clock event
 }
 ```
 
