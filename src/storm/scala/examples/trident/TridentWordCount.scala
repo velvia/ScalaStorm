@@ -27,6 +27,7 @@ object TridentWordCount extends App {
     val wordCounts = topology.newStream("spout1", spout)
       .parallelismHint(16)
       .flatMap("sentence" -> "word") { _.getString(0).split(" ") }
+      .groupBy(new Fields("word"))
       .persistentAggregate(new MemoryMapState.Factory(), new Count(), new Fields("count"))
 
     topology.newDRPCStream("words", drpc)
