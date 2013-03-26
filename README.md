@@ -64,7 +64,7 @@ If you want to build from source:
 
 * Download [sbt](https://github.com/harrah/xsbt/wiki) version 0.10.1 or above
 * clone this project
-* In the root project dir, type `sbt run`.  SBT will automatically download all dependencies, compile the code, and give you a menu of topologies to run.
+* In the root project dir, type `sbt test:run`.  SBT will automatically download all dependencies, compile the code, and give you a menu of topologies to run.
 
 To help you get started, the ExclamationTopology and WordCountTopology examples from storm starter have been included.
 
