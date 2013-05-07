@@ -6,4 +6,4 @@ addSbtPlugin("com.jsuereth" % "xsbt-gpg-plugin" % "0.6")
 
 resolvers += "gseitz@github" at "http://gseitz.github.com/maven/"
 
-addSbtPlugin("com.github.gseitz" % "sbt-release" % "0.4")
+addSbtPlugin("com.github.gseitz" % "sbt-release" % "0.7")
