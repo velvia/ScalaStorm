@@ -1,4 +1,4 @@
-import sbtrelease.Release._
+import sbtrelease.ReleasePlugin._
 
 
 name := "scala-storm"

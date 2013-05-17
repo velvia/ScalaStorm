@@ -19,7 +19,7 @@ import backtype.storm.task.TopologyContext
 //   <tuple> emit (...)
 //   using no anchor emit (...)
 abstract class StormBolt(val streamToFields: collection.Map[String, List[String]])
-    extends BaseRichBolt with SetupFunc with BoltDsl {
+    extends BaseRichBolt with SetupFunc with ShutdownFunc with BoltDsl {
     var _context: TopologyContext = _
     var _conf: java.util.Map[_, _] = _
 
@@ -38,6 +38,8 @@ abstract class StormBolt(val streamToFields: collection.Map[String, List[String]
         declarer.declareStream(stream, new Fields(fields:_*))
       }
     }
+    
+    override def cleanup() = _cleanup()
 }
 
 /**
