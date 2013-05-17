@@ -15,11 +15,11 @@ package storm.scala.dsl
 trait SetupFunc {
   
   // fire all setup functions
-  def _setup() = __setup.foreach(_())
+  def _setup() = setupFuncs.foreach(_())
 
   // register a setup function
-  def setup(func: => Unit) = { __setup ::= func _ }
+  def setup(func: => Unit) = { setupFuncs ::= func _ }
 
   // registered setup functions
-  private var __setup: List[() => Unit] = Nil
+  private var setupFuncs: List[() => Unit] = Nil
 }

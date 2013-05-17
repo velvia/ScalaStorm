@@ -14,11 +14,11 @@ package storm.scala.dsl
 trait ShutdownFunc {
 
   // register a shutdown function
-  def shutdown(sf: => Unit) = _shutdown ::= sf _
+  def shutdown(sf: => Unit) = _shutdownFunctions ::= sf _
 
   // fire all registered shutdown functions
-  protected def _cleanup() = _shutdown.foreach(_())
+  protected def _cleanup() = _shutdownFunctions.foreach(_())
 
   // list of registered shutdown functions
-  private var _shutdown: List[() => Unit] = Nil
+  private var _shutdownFunctions: List[() => Unit] = Nil
 }
