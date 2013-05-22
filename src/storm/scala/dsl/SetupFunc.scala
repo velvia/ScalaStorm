@@ -13,9 +13,13 @@ package storm.scala.dsl
 //   setup { myIterator = ...  }
 // }
 trait SetupFunc {
-  var _setup:() => Unit = defaultSetup
+  
+  // fire all setup functions
+  def _setup() = setupFuncs.foreach(_())
 
-  def defaultSetup() = {}
+  // register a setup function
+  def setup(func: => Unit) = { setupFuncs ::= func _ }
 
-  def setup(func: => Unit) = { _setup = func _ }
+  // registered setup functions
+  private var setupFuncs: List[() => Unit] = Nil
 }
