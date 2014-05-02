@@ -11,10 +11,13 @@ import backtype.storm.tuple.Fields
 import collection.JavaConverters._
 import collection.JavaConversions._
 
-abstract class StormSpout(val outputFields: List[String],
-                          val isDistributed: Boolean = false) extends BaseRichSpout with SetupFunc {
+abstract class StormSpout(val streamToFields: collection.Map[String, List[String]],
+                          val isDistributed: Boolean) extends BaseRichSpout with SetupFunc {
   var _context:TopologyContext = _
   var _collector:SpoutOutputCollector = _
+
+  // A constructor for the common case when you just want to output to the default stream
+  def this(outputFields: List[String], distributed: Boolean = false) = this(collection.Map("default" -> outputFields), distributed)
 
   def open(conf: Map[_, _], context: TopologyContext, collector: SpoutOutputCollector) = {
     _context = context
@@ -26,7 +29,9 @@ abstract class StormSpout(val outputFields: List[String],
   //def nextTuple() {}
 
   def declareOutputFields(declarer: OutputFieldsDeclarer) =
-    declarer.declare(new Fields(outputFields))
+    streamToFields foreach { case(stream, fields) =>
+      declarer.declareStream(stream, new Fields(fields:_*))
+    }
 
   // DSL for emit and emitDirect.
   // [toStream(<streamId>)] emit (val1, val2, ..)
