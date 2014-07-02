@@ -1,10 +1,10 @@
 import sbtrelease.ReleasePlugin._
 
-
 name := "scala-storm"
 
-// If you comment this out, SBT 0.10 will default to Scala 2.8.1
 scalaVersion := "2.10.4"
+
+crossScalaVersions := Seq("2.9.2", "2.10.4")
 
 organization := "com.github.velvia"
 
@@ -24,6 +24,14 @@ javaOptions += "-XX:MaxPermSize=1g"
 javaOptions += "-Xmx2g"
 
 scalacOptions += "-Yresolve-term-conflict:package"
+
+scalacOptions ++= {
+	if (scalaVersion.value.startsWith("2.10")) {
+		Seq("-feature", "-language:implicitConversions")
+	} else {
+		Seq()
+	}
+}
 
 // When doing sbt run, fork a separate process.  This is apparently needed by storm.
 fork := true
