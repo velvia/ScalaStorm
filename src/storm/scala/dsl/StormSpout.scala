@@ -12,7 +12,7 @@ import collection.JavaConverters._
 import collection.JavaConversions._
 
 abstract class StormSpout(val streamToFields: collection.Map[String, List[String]],
-                          val isDistributed: Boolean) extends BaseRichSpout with SetupFunc {
+                          val isDistributed: Boolean) extends BaseRichSpout with SetupFunc with ShutdownFunc {
   var _context:TopologyContext = _
   var _collector:SpoutOutputCollector = _
 
@@ -23,6 +23,11 @@ abstract class StormSpout(val streamToFields: collection.Map[String, List[String
     _context = context
     _collector = collector
     _setup()
+  }
+
+  override
+  def close() = {
+    _cleanup()
   }
 
   // nextTuple needs to be defined by each spout inheriting from here
