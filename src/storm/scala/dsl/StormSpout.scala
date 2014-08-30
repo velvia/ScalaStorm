@@ -25,8 +25,7 @@ abstract class StormSpout(val streamToFields: collection.Map[String, List[String
     _setup()
   }
 
-  override
-  def close() = {
+  override def close() = {
     _cleanup()
   }
 
