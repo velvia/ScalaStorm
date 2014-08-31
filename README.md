@@ -31,6 +31,10 @@ Added support for multiple streams in Spouts:
 class MultiStreamSpout extends StormSpout(Map("city" -> List("city"), "browser" -> List("browser"))) {
 }
 ```
+Switched to Apache Storm distribution
+Build system updated to sbt 0.13.5
+Build system supports crosscompiling for scala 2.9/2.10
+ShutdownFunc trait added to StormSpout
 
 Please Read For 0.2.2 / Storm 0.8.0+ Users
 =========================================
