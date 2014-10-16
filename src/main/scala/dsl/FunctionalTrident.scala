@@ -5,6 +5,7 @@ import collection.JavaConversions._
 import storm.trident.tuple.TridentTuple
 import storm.trident.operation.{TridentCollector, BaseFunction}
 import backtype.storm.tuple.Fields
+import scala.language.implicitConversions
 
 /**
  * Functional DSL for Trident so you can easily use Scala closures with Trident.
