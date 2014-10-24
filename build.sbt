@@ -12,3 +12,5 @@ scalacOptions ++= Seq("-feature", "-deprecation", "-Yresolve-term-conflict:packa
 
 // When doing sbt run, fork a separate process.  This is apparently needed by storm.
 fork := true
+
+resolvers += "clojars" at "https://clojars.org/repo"
