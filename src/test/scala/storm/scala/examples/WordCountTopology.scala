@@ -7,6 +7,7 @@ import backtype.storm.topology.TopologyBuilder
 import backtype.storm.tuple.{Fields, Tuple, Values}
 import collection.mutable.{Map, HashMap}
 import util.Random
+import scala.language.postfixOps
 
 
 class RandomSentenceSpout extends StormSpout(outputFields = List("sentence")) {

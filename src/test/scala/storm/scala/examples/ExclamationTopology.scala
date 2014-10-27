@@ -6,7 +6,7 @@ import backtype.storm.LocalCluster
 import backtype.storm.testing.TestWordSpout
 import backtype.storm.topology.TopologyBuilder
 import backtype.storm.tuple.{Fields, Tuple, Values}
-
+import scala.language.postfixOps
 
 class ExclamationBolt extends StormBolt(outputFields = List("word")) {
   def execute(t: Tuple) {

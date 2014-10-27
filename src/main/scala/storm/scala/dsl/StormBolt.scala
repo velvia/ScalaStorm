@@ -7,7 +7,7 @@ import backtype.storm.topology.OutputFieldsDeclarer
 import backtype.storm.tuple.{Fields, Tuple}
 import backtype.storm.task.OutputCollector
 import backtype.storm.task.TopologyContext
-
+import scala.language.implicitConversions
 
 // The StormBolt class is an implementation of IRichBolt which
 // provides a Scala DSL for making Bolt development concise.
