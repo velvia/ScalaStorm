@@ -60,6 +60,9 @@ class StormTuple(collector: OutputCollector, val tuple:Tuple)
   // Ack this tuple
   def ack = collector.ack(tuple)
 
+  // Fail this tuple
+  def fail = collector.fail(tuple)
+
   val lastResort: PartialFunction[Seq[Any], Unit] = {
       case _ => throw new RuntimeException("Unhandled tuple " + tuple)
     }
@@ -91,4 +94,7 @@ class StormTupleList(collector: OutputCollector, val tuples: Seq[Tuple])
 
   // convenience func for acking a list of tuples
   def ack = tuples foreach { collector.ack }
+
+  // convenience func for failing a list of tuples
+  def fail = tuples foreach { collector.fail }
 }
