@@ -2,7 +2,6 @@
 
 package storm.scala.dsl
 
-import java.util.Map
 import backtype.storm.task.TopologyContext
 import backtype.storm.spout.SpoutOutputCollector
 import backtype.storm.topology.OutputFieldsDeclarer
@@ -15,13 +14,15 @@ abstract class StormSpout(val streamToFields: collection.Map[String, List[String
                           val isDistributed: Boolean) extends BaseRichSpout with SetupFunc with ShutdownFunc {
   var _context:TopologyContext = _
   var _collector:SpoutOutputCollector = _
+  var _conf: java.util.Map[_, _] = _
 
   // A constructor for the common case when you just want to output to the default stream
   def this(outputFields: List[String], distributed: Boolean = false) = this(collection.Map("default" -> outputFields), distributed)
 
-  def open(conf: Map[_, _], context: TopologyContext, collector: SpoutOutputCollector) = {
+  def open(conf: java.util.Map[_, _], context: TopologyContext, collector: SpoutOutputCollector) = {
     _context = context
     _collector = collector
+    _conf = conf
     _setup()
   }
 
