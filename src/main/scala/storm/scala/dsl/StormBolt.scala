@@ -8,6 +8,7 @@ import backtype.storm.tuple.{Fields, Tuple}
 import backtype.storm.task.OutputCollector
 import backtype.storm.task.TopologyContext
 import scala.language.implicitConversions
+import java.util.{Map => JMap}
 
 // The StormBolt class is an implementation of IRichBolt which
 // provides a Scala DSL for making Bolt development concise.
@@ -21,12 +22,12 @@ import scala.language.implicitConversions
 abstract class StormBolt(val streamToFields: collection.Map[String, List[String]])
     extends BaseRichBolt with SetupFunc with ShutdownFunc with BoltDsl {
     var _context: TopologyContext = _
-    var _conf: java.util.Map[_, _] = _
+    var _conf: JMap[_, _] = _
 
     // A constructor for the common case when you just want to output to the default stream
     def this(outputFields: List[String]) = { this(Map("default" -> outputFields)) }
 
-    def prepare(conf:java.util.Map[_, _], context:TopologyContext, collector:OutputCollector) {
+    def prepare(conf:JMap[_, _], context:TopologyContext, collector:OutputCollector) {
         _collector = collector
         _context = context
         _conf = conf
