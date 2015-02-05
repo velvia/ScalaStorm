@@ -12,7 +12,7 @@ import storm.scala.dsl.{StormMetricsConsumer, StormBolt}
 import collection.JavaConverters._
 
 /**
- * registers the metric processor to only handle the 'throughput' metric
+ * registers the metric processor to only handle the 'metric:1' metric
  */
 class TestMetricsConsumer extends StormMetricsConsumer(allowedMetrics = Set("metric:1")) with ShouldMatchers {
   var count = 0
@@ -70,7 +70,7 @@ class TestMetricsConsumerWithConfig extends StormMetricsConsumer() with ShouldMa
 }
 
 /**
- * a test bolt that just increments the 'throughput' and 'dummy' metric on each tick tuple received
+ * a test bolt that just increments the 'metric:1' and 'metric:2' metric on each tick tuple received
  */
 class TestBolt extends StormBolt(outputFields = List()) {
   var metric1 : CountMetric = _
@@ -99,9 +99,9 @@ class TestBolt extends StormBolt(outputFields = List()) {
  *
  */
 class MetricsTopologyTest extends FeatureSpec with GivenWhenThen with ShouldMatchers {
-  feature("Merices asigned within a topology should be processed by the wrapped StormMetricsConsumer DSL") {
+  feature("Metrics assigned within a topology should be processed by the wrapped StormMetricsConsumer DSL") {
     scenario("Start topology with registered metric and check if it gets offered to the metric implementation") {
-      Given("A test topology with metric 'throughput' and 'dummy' registered, and running on ticks")
+      Given("A test topology with metric 'metric:1' and 'metric:2' registered, and running on ticks")
         val builder = new TopologyBuilder()
         builder.setBolt("tick", new TestBolt, 1)
 
@@ -114,7 +114,8 @@ class MetricsTopologyTest extends FeatureSpec with GivenWhenThen with ShouldMatc
         cluster.submitTopology("MetricsTopologyTest", conf, builder.createTopology())
 
       When("a tick is seen by the bolt")
-      Then("only the 'throughput' metric is offered to the registered MetricsConsumer")
+      Then("only 'metric:1' is offered to the registered TestMetricsConsumer")
+      And("all metrics are offered to the registered TestMetricsConsumerWithConfig")
 
         Thread sleep 5000
         cluster.killTopology("MetricsTopologyTest")
