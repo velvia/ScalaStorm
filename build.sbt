@@ -8,7 +8,7 @@ organization := "com.github.velvia"
 
 libraryDependencies += "org.apache.storm" % "storm-core" % "0.9.2-incubating" % "provided" exclude("junit", "junit")
 
-libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.4" % "test"
+libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 
 libraryDependencies += "org.apache.storm" % "storm-core" % "0.9.2-incubating" % "test" exclude("junit", "junit")
 
