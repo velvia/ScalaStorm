@@ -16,7 +16,7 @@ import collection.JavaConverters._
  * these metrics will be provided in the overridden processDataPoints method.
  *
  * USAGE :
- *
+ * {{{
  * class MyMetricConsumer extends StormMetricsConsumer {
  *  setup {
  *      // all initialization should be done here
@@ -41,23 +41,24 @@ import collection.JavaConverters._
  *      //e.g. forward them to your metric system (like ganglia)
  *  }
  * }
+ * }}}
  */
-abstract class StormMetricsConsumer(val allowedMetrics : List[String]) extends IMetricsConsumer with SetupFunc with ShutdownFunc {
+abstract class StormMetricsConsumer(val allowedMetrics : Set[String]) extends IMetricsConsumer with SetupFunc with ShutdownFunc {
 
-    protected var _conf: JMap[_,_] = _
-    protected var _argConfig: Map[String,_] = _
+    protected var _conf: JMap[_, _] = _
+    protected var _argConfig: Option[Map[String, _]] = _
     protected var _context: TopologyContext = _
-    protected var _errorReporter : IErrorReporter = _
+    protected var _errorReporter: IErrorReporter = _
 
     /** default constructor
       * empty metric list, thus meaning that you're interested in all delivered metrices */
-    def this() = { this(List()) }
+    def this() = { this(Set()) }
 
     /**
      * Initialize the metric consumer and call its registered setup functions
      *
      * @param conf the storm configuration
-     * @param registrationArgument metric plugin specific config as defined in the config file
+     * @param registrationArgument metric plugin specific config as defined in the config file (should be a key/value map)
      * @param context   the topology context
      * @param errorReporter to report back possible exceptions
      */
@@ -65,7 +66,7 @@ abstract class StormMetricsConsumer(val allowedMetrics : List[String]) extends I
         _context = context
         _errorReporter = errorReporter
         _conf = conf
-        _argConfig = registrationArgument.asInstanceOf[JMap[String,_]].asScala.toMap
+        _argConfig = Option(registrationArgument.asInstanceOf[JMap[String, _]]).map(_.asScala.toMap)
         _setup()
     }
 
@@ -76,10 +77,10 @@ abstract class StormMetricsConsumer(val allowedMetrics : List[String]) extends I
      * @param dataPoints    the list of received data points
      */
     final override def handleDataPoints(taskInfo: TaskInfo, dataPoints: JCollection[DataPoint]) : Unit = {
-        val dps = dataPoints.asScala.toList
+        val dps = if (allowedMetrics.isEmpty) dataPoints.asScala.toSet
+                  else dataPoints.asScala.toSet.filter(allowedMetrics contains _.name)
 
-        if(allowedMetrics.isEmpty) processDataPoints( taskInfo, dps )
-        else processDataPoints( taskInfo, dps.filter{ dp => allowedMetrics.contains (dp.name) } )
+        if (dps.nonEmpty) processDataPoints(taskInfo, dps)
     }
 
     /**
@@ -95,5 +96,5 @@ abstract class StormMetricsConsumer(val allowedMetrics : List[String]) extends I
      * @param taskInfo taskInfo of the task that originated the data points
      * @param dataPoints the list of received data points
      */
-    protected def processDataPoints(taskInfo: TaskInfo, dataPoints : List[DataPoint]) : Unit
+    protected def processDataPoints(taskInfo: TaskInfo, dataPoints: Set[DataPoint]) : Unit
 }
