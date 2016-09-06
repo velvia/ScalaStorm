@@ -1,16 +1,14 @@
 name := "scala-storm"
 
-scalaVersion := "2.11.4"
+scalaVersion := "2.11.8"
 
 crossScalaVersions := Seq("2.10.4", "2.11.4")
 
 organization := "com.github.velvia"
 
-libraryDependencies += "org.apache.storm" % "storm-core" % "0.9.3" % "provided" exclude("junit", "junit")
+libraryDependencies += "org.apache.storm" % "storm-core" % "1.0.2" % "provided" exclude("junit", "junit")
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
-
-libraryDependencies += "org.apache.storm" % "storm-core" % "0.9.2-incubating" % "test" exclude("junit", "junit")
+libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.6" % "test"
 
 scalacOptions ++= Seq("-feature", "-deprecation", "-Yresolve-term-conflict:package")
 

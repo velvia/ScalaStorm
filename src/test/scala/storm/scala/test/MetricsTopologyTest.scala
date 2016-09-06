@@ -2,11 +2,11 @@ package storm.scala.test
 
 import java.util.{Map => JMap}
 
-import backtype.storm.metric.api.IMetricsConsumer.{DataPoint, TaskInfo}
-import backtype.storm.{LocalCluster, Config}
-import backtype.storm.metric.api.CountMetric
-import backtype.storm.topology.TopologyBuilder
-import backtype.storm.tuple.Tuple
+import org.apache.storm.metric.api.IMetricsConsumer.{DataPoint, TaskInfo}
+import org.apache.storm.{LocalCluster, Config}
+import org.apache.storm.metric.api.CountMetric
+import org.apache.storm.topology.TopologyBuilder
+import org.apache.storm.tuple.Tuple
 import org.scalatest._
 import storm.scala.dsl.{StormMetricsConsumer, StormBolt}
 import collection.JavaConverters._

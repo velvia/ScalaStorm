@@ -2,11 +2,11 @@
 
 package storm.scala.dsl
 
-import backtype.storm.topology.base.BaseRichBolt
-import backtype.storm.topology.OutputFieldsDeclarer
-import backtype.storm.tuple.{Fields, Tuple}
-import backtype.storm.task.OutputCollector
-import backtype.storm.task.TopologyContext
+import org.apache.storm.topology.base.BaseRichBolt
+import org.apache.storm.topology.OutputFieldsDeclarer
+import org.apache.storm.tuple.{Fields, Tuple}
+import org.apache.storm.task.OutputCollector
+import org.apache.storm.task.TopologyContext
 import scala.language.implicitConversions
 import java.util.{Map => JMap}
 
@@ -39,7 +39,7 @@ abstract class StormBolt(val streamToFields: collection.Map[String, List[String]
         declarer.declareStream(stream, new Fields(fields:_*))
       }
     }
-    
+
     override def cleanup() = _cleanup()
 }
 

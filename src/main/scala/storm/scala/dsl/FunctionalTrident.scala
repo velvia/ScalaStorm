@@ -2,9 +2,9 @@ package storm.scala.dsl
 
 import collection.JavaConversions._
 
-import storm.trident.tuple.TridentTuple
-import storm.trident.operation.{TridentCollector, BaseFunction}
-import backtype.storm.tuple.Fields
+import org.apache.storm.trident.tuple.TridentTuple
+import org.apache.storm.trident.operation.{TridentCollector, BaseFunction}
+import org.apache.storm.tuple.Fields
 import scala.language.implicitConversions
 
 /**
@@ -23,7 +23,7 @@ object FunctionalTrident {
     }
   }
 
-  class FunctionalStream(origStream: storm.trident.Stream) {
+  class FunctionalStream(origStream: org.apache.storm.trident.Stream) {
     // Example usage:
     // stream.map("sentence" -> "numwords") { _.getString(0).split(" ").length }
     def map(fieldMapping: (String, String))(mapFunc: TridentTuple => Any) =
@@ -39,6 +39,6 @@ object FunctionalTrident {
                       new Fields(fieldMapping._2))
   }
 
-  implicit def TridentStreamToFunctionalStream(stream: storm.trident.Stream) =
+  implicit def TridentStreamToFunctionalStream(stream: org.apache.storm.trident.Stream) =
     new FunctionalStream(stream)
 }
