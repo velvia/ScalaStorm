@@ -2,10 +2,10 @@ package storm.scala.dsl
 
 import java.util.{Map => JMap, Collection => JCollection}
 
-import backtype.storm.metric.api.IMetricsConsumer
-import backtype.storm.metric.api.IMetricsConsumer.TaskInfo
-import backtype.storm.metric.api.IMetricsConsumer.DataPoint
-import backtype.storm.task.{IErrorReporter, TopologyContext}
+import org.apache.storm.metric.api.IMetricsConsumer
+import org.apache.storm.metric.api.IMetricsConsumer.TaskInfo
+import org.apache.storm.metric.api.IMetricsConsumer.DataPoint
+import org.apache.storm.task.{IErrorReporter, TopologyContext}
 import collection.JavaConverters._
 
 /**

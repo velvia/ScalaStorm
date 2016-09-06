@@ -2,10 +2,10 @@
 
 package storm.scala.dsl
 
-import backtype.storm.tuple.{Fields, Tuple, Values}
-import backtype.storm.task.TopologyContext
-import backtype.storm.task.OutputCollector
-import backtype.storm.tuple.MessageId
+import org.apache.storm.tuple.{Fields, Tuple, Values}
+import org.apache.storm.task.TopologyContext
+import org.apache.storm.task.OutputCollector
+import org.apache.storm.tuple.MessageId
 import collection.JavaConversions._
 import collection.JavaConverters._
 

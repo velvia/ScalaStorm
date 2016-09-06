@@ -1,11 +1,11 @@
 package storm.scala.examples
 
 import storm.scala.dsl._
-import backtype.storm.Config
-import backtype.storm.LocalCluster
-import backtype.storm.testing.TestWordSpout
-import backtype.storm.topology.TopologyBuilder
-import backtype.storm.tuple.{Fields, Tuple, Values}
+import org.apache.storm.Config
+import org.apache.storm.LocalCluster
+import org.apache.storm.testing.TestWordSpout
+import org.apache.storm.topology.TopologyBuilder
+import org.apache.storm.tuple.{Fields, Tuple, Values}
 import scala.language.postfixOps
 
 class ExclamationBolt extends StormBolt(outputFields = List("word")) {
